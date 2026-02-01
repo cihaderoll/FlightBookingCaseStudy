@@ -1,9 +1,9 @@
-﻿using FlightBookingCaseStudy.Domain.Models;
+﻿using FlightBookingCaseStudy.Application.Use_Cases.Commands.Search;
 
 namespace FlightBookingCaseStudy.Application.Interfaces
 {
     public interface IFlightProviderClient
     {
-        public Task<List<FlightModel>> SearchFlight(string origin, string destination, DateOnly departdate);
+        public Task<List<FlightDto>> SearchFlight(string origin, string destination, DateOnly departDate, DateOnly? returNDate);
     }
 }

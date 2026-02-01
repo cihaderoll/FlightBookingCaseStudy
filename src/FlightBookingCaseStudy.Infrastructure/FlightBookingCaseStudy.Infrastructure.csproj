@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="16.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FlightBookingCaseStudy.Application\FlightBookingCaseStudy.Application.csproj" />
     <ProjectReference Include="..\FlightBookingCaseStudy.Domain\FlightBookingCaseStudy.Domain.csproj" />
   </ItemGroup>

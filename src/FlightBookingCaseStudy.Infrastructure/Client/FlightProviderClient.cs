@@ -1,12 +1,15 @@
-﻿using FlightBookingCaseStudy.Application.Interfaces;
+﻿using AutoMapper;
+using FlightBookingCaseStudy.Application.Interfaces;
+using FlightBookingCaseStudy.Application.Use_Cases.Commands.Search;
 using FlightBookingCaseStudy.Domain.Models;
+using FlightBookingCaseStudy.Infrastructure.Extensions;
 using System.Text;
 
 namespace FlightBookingCaseStudy.Infrastructure.Client
 {
-    public class FlightProviderClient(HttpClient client) : IFlightProviderClient
+    public class FlightProviderClient(HttpClient client, IMapper _mapper) : IFlightProviderClient
     {
-        public async Task<List<FlightModel>> SearchFlight(string origin, string destination, DateOnly departdate)
+        public async Task<List<FlightDto>> SearchFlight(string origin, string destination, DateOnly departDate, DateOnly? returnDate)
         {
             var soapEnvelope = $@"<?xml version=""1.0"" encoding=""utf-8""?>
                 <s:Envelope xmlns:s=""http://schemas.xmlsoap.org/soap/envelope/"">
@@ -15,7 +18,7 @@ namespace FlightBookingCaseStudy.Infrastructure.Client
                       <request>
                         <Origin>{origin}</Origin>
                         <Destination>{destination}</Destination>
-                        <DepartureDate>{departdate}</DepartureDate>
+                        <DepartureDate>{departDate}</DepartureDate>
                       </request>
                     </AvailabilitySearch>
                   </s:Body>
@@ -33,7 +36,7 @@ namespace FlightBookingCaseStudy.Infrastructure.Client
 
             var responseString = await response.Content.ReadAsStringAsync();
 
-            return null;
+            return _mapper.Map<List<FlightDto>>(responseString.ParseSoapResponse());
         }
     }
 }

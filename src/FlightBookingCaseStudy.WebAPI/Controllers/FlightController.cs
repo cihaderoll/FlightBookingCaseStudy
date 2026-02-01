@@ -14,6 +14,13 @@ namespace FlightBookingCaseStudy.WebAPI.Controllers
         {
             var flights = await mediator.Send(command);
 
+            ///TODO: Add proper response codes and error handling
+            ///TODO: Add pagination support
+            ///TODO: CACHING
+            ///TODO: LOGGING(DB)
+            ///TODO: AIRPORT VALIDATION
+            ///TODO: BOOK RECORDS
+
             return Ok(flights);
         }
     }
