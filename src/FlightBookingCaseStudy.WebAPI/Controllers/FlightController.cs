@@ -1,21 +1,20 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FlightBookingCaseStudy.Application.Use_Cases.Commands.Search;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightBookingCaseStudy.WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/flights")]
     [ApiController]
-    public class FlightController : ControllerBase
+    public class FlightController(IMediator mediator) : ControllerBase
     {
 
-        public FlightController() 
+        [HttpGet]
+        public async Task<IActionResult> Search([FromQuery]GetFlightsCommand command)
         {
-            
-        }
+            var flights = await mediator.Send(command);
 
-        public IActionResult Search()
-        {
-            return Ok(new { Message = "GetFlights endpoint is working!" });
+            return Ok(flights);
         }
     }
 }
