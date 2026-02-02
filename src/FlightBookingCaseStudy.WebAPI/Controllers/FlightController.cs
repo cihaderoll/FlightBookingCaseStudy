@@ -16,7 +16,6 @@ namespace FlightBookingCaseStudy.WebAPI.Controllers
 
             ///TODO: Add proper response codes and error handling
             ///TODO: Add pagination support
-            ///TODO: CACHING
             ///TODO: LOGGING(DB)
             ///TODO: AIRPORT VALIDATION
             ///TODO: BOOK RECORDS

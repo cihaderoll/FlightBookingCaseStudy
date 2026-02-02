@@ -1,4 +1,4 @@
-﻿using FlightBookingCaseStudy.Application.Common;
+﻿using FlightBookingCaseStudy.Application.Common.Behaviors;
 using FlightBookingCaseStudy.Application.Use_Cases.Commands.Search;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +15,7 @@ namespace FlightBookingCaseStudy.Application
             {
                 cfg.RegisterServicesFromAssembly(typeof(GetFlightsCommand).Assembly);
                 cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+                cfg.AddOpenBehavior(typeof(CachingBehavior<,>));
             });
 
             return services;
