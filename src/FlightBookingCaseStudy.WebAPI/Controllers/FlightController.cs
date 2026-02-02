@@ -19,7 +19,7 @@ namespace FlightBookingCaseStudy.WebAPI.Controllers
             ///TODO: LOGGING(DB)
             ///TODO: AIRPORT VALIDATION
             ///TODO: BOOK RECORDS
-
+            ///TODO: RETURN COMMON SERVICE RESPONSE
             return Ok(flights);
         }
     }

@@ -1,13 +1,9 @@
-﻿using AutoMapper;
-using FlightBookingCaseStudy.Application.Interfaces;
+﻿using FlightBookingCaseStudy.Application.Interfaces;
+using FlightBookingCaseStudy.Infrastructure.Persistence;
 using FlightBookingCaseStudy.Infrastructure.Services.Caching;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FlightBookingCaseStudy.Infrastructure.Extensions
 {
@@ -15,6 +11,15 @@ namespace FlightBookingCaseStudy.Infrastructure.Extensions
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+            services.AddDbContext<ApplicationDbContext>((sp, options) =>
+            {
+                options.UseNpgsql(connectionString);
+            });
+
+            services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+
             services.AddAutoMapper(cfg => { }, typeof(Mapping.MappingProfile).Assembly);
 
             services.AddStackExchangeRedisCache(options =>
