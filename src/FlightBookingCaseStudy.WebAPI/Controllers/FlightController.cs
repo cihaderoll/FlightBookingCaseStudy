@@ -17,7 +17,6 @@ namespace FlightBookingCaseStudy.WebAPI.Controllers
 
             ///TODO: LOGGING(DB)
             ///TODO: AIRPORT VALIDATION
-            ///TODO: BOOK RECORDS
             ///TODO: CONTINUE TO PROCESS WHEN CACHE IS BROKEN
             ///TODO: IDENTITY
             return Ok(flights);

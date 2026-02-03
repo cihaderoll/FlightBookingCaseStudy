@@ -9,6 +9,7 @@ namespace FlightBookingCaseStudy.Infrastructure.Persistence
     : DbContext(options), IApplicationDbContext
     {
         public DbSet<Order> Orders => Set<Order>();
+        public DbSet<Airport> Airports => Set<Airport>();
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
