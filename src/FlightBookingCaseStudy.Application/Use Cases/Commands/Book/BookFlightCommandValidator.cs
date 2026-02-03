@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 
 namespace FlightBookingCaseStudy.Application.Use_Cases.Commands.Book
 {
-    public class BookFlightCommand : IRequest<Guid>
+    public class BookFlightCommandValidator : AbstractValidator<BookFlightCommand>
     {
-        public string FlightNumber { get; set; }
+        public BookFlightCommandValidator()
+        {
+        }
     }
 }

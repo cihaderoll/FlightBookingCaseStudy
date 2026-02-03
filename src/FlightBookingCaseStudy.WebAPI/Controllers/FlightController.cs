@@ -1,4 +1,5 @@
-﻿using FlightBookingCaseStudy.Application.Use_Cases.Commands.Search;
+﻿using FlightBookingCaseStudy.Application.Use_Cases.Commands.Book;
+using FlightBookingCaseStudy.Application.Use_Cases.Commands.Search;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,17 +11,23 @@ namespace FlightBookingCaseStudy.WebAPI.Controllers
     {
 
         [HttpGet]
-        public async Task<IActionResult> Search([FromQuery]GetFlightsCommand command)
+        public async Task<IActionResult> Search([FromQuery] GetFlightsCommand command)
         {
             var flights = await mediator.Send(command);
 
-            ///TODO: Add proper response codes and error handling
-            ///TODO: Add pagination support
             ///TODO: LOGGING(DB)
             ///TODO: AIRPORT VALIDATION
             ///TODO: BOOK RECORDS
-            ///TODO: RETURN COMMON SERVICE RESPONSE
+            ///TODO: CONTINUE TO PROCESS WHEN CACHE IS BROKEN
+            ///TODO: IDENTITY
             return Ok(flights);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Book([FromBody] BookFlightCommand command)
+        {
+            var orderId = await mediator.Send(command);
+            return Ok(orderId);
         }
     }
 }

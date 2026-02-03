@@ -1,4 +1,5 @@
-﻿using FlightBookingCaseStudy.Application.Interfaces;
+﻿using FlightBookingCaseStudy.Application.Common.Settings;
+using FlightBookingCaseStudy.Application.Interfaces;
 using FlightBookingCaseStudy.Infrastructure.Persistence;
 using FlightBookingCaseStudy.Infrastructure.Services.Caching;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,8 @@ namespace FlightBookingCaseStudy.Infrastructure.Extensions
             });
 
             services.AddSingleton<ICachingService, RedisCacheService>();
+
+            services.Configure<CacheSettings>(configuration.GetSection("Caching"));
 
             return services;
         }

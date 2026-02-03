@@ -15,7 +15,7 @@ namespace FlightBookingCaseStudy.Application
             {
                 cfg.RegisterServicesFromAssembly(typeof(GetFlightsCommand).Assembly);
                 cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
-                cfg.AddOpenBehavior(typeof(CachingBehavior<,>));
+                //cfg.AddOpenBehavior(typeof(CachingBehavior<,>));
             });
 
             return services;

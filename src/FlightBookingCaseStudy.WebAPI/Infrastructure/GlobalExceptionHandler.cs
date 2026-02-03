@@ -21,7 +21,7 @@ namespace FlightBookingCaseStudy.WebAPI.Infrastructure
                     Status = StatusCodes.Status400BadRequest,
                     Type = "ValidationFailure",
                     Title = "Validation Error",
-                    Detail = "One or more validation errors occurred.",
+                    Detail = !string.IsNullOrEmpty(validationException.Message) ? validationException.Message : "One or more validation errors occurred.",
                     Extensions = { ["errors"] = errors }
                 };
 

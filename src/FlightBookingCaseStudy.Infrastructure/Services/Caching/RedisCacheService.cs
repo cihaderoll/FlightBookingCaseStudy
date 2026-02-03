@@ -20,7 +20,7 @@ namespace FlightBookingCaseStudy.Infrastructure.Services.Caching
         {
             var options = new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromMinutes(5)
+                AbsoluteExpirationRelativeToNow = expiration ?? TimeSpan.FromMinutes(15)
             };
 
             var serializedData = JsonSerializer.Serialize(value);
