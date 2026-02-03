@@ -10,19 +10,13 @@ namespace FlightBookingCaseStudy.Application.Use_Cases.Commands.Search
     public class GetFlightsCommandHandler : IRequestHandler<GetFlightsCommand, List<FlightDto>>
     {
         private readonly IFlightProviderClient _flightProviderClient;
-        private readonly IMapper _mapper;
-        private readonly CacheSettings _cacheSettings;
         private readonly IAirportService _airportService;
 
         public GetFlightsCommandHandler(
             IFlightProviderClient flightProviderClient,
-            IMapper mapper,
-            IOptions<CacheSettings> cacheSettings,
             IAirportService airportService)
         {
             _flightProviderClient = flightProviderClient;
-            _mapper = mapper;
-            _cacheSettings = cacheSettings.Value;
             _airportService = airportService;
         }
 

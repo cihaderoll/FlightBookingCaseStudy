@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightBookingCaseStudy.Infr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightBookingCaseStudy.WebAPI", "src\FlightBookingCaseStudy.WebAPI\FlightBookingCaseStudy.WebAPI.csproj", "{55C70C43-FE81-7D9C-3CA7-DBCA9B754F2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightBookingCaseStudy.Test", "tests\FlightBookingCaseStudy.Test\FlightBookingCaseStudy.Test.csproj", "{7348CE09-CF5F-4A9E-902B-C13D06D6EAD5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{55C70C43-FE81-7D9C-3CA7-DBCA9B754F2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55C70C43-FE81-7D9C-3CA7-DBCA9B754F2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55C70C43-FE81-7D9C-3CA7-DBCA9B754F2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7348CE09-CF5F-4A9E-902B-C13D06D6EAD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7348CE09-CF5F-4A9E-902B-C13D06D6EAD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7348CE09-CF5F-4A9E-902B-C13D06D6EAD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7348CE09-CF5F-4A9E-902B-C13D06D6EAD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

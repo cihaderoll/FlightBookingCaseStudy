@@ -33,25 +33,15 @@ namespace FlightBookingCaseStudy.Application.Use_Cases.Commands.Book
 
         public async Task<Guid> Handle(BookFlightCommand request, CancellationToken cancellationToken)
         {
-            // get selected flight from cache
-            // if no cache or flight, return error
-            // create order entity
-
-
             var flights = await _cacheService.GetAsync<List<FlightDto>>(_cacheSettings.CacheKeyPrefix);
             if(flights == null || !flights.Any())
-            {
                 throw new ValidationException("Flight data not found! Search again please");
-            }
 
             var targetFlight = flights.FirstOrDefault(f => f.FlightNumber == request.FlightNumber);
             if(targetFlight == null)
-            {
                 throw new ValidationException("Please check your flight number.");
-            }
 
-
-                var order = new Order
+            var order = new Order
             {
                 Id = Guid.NewGuid(),
                 FlightNumber = targetFlight.FlightNumber,
@@ -66,10 +56,5 @@ namespace FlightBookingCaseStudy.Application.Use_Cases.Commands.Book
             // error log and return error
             return Guid.NewGuid();
         }
-
-        //private async Task<bool> ValidateAirports(string origin, string destination)
-        //{
-        //    var airports = 
-        //}
     }
 }
