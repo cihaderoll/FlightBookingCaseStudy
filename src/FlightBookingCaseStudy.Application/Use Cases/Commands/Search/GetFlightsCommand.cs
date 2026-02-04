@@ -9,5 +9,6 @@ namespace FlightBookingCaseStudy.Application.Use_Cases.Commands.Search
         public string? Destination { get; set; }
         public DateOnly DepartDate { get; set; }
         public DateOnly? ReturnDate { get; set; }
+        string ICacheable.FlightId { get; set; }
     }
 }

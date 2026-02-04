@@ -10,14 +10,14 @@ using System.Threading;
 
 namespace FlightBookingCaseStudy.Infrastructure.Client
 {
-    public class FlightProviderClient(HttpClient client, IMapper _mapper, ICachingService _cachingService, IOptions<CacheSettings> _cacheSettings) : IFlightProviderClient
+    public class FlightProviderClient(HttpClient client, IMapper _mapper, ICachingService<FlightDto> _cachingService, IOptions<CacheSettings> _cacheSettings) : IFlightProviderClient
     {
         private CacheSettings cacheSettings => _cacheSettings.Value;
 
 
         public async Task<List<FlightDto>> SearchFlight(string origin, string destination, DateOnly departDate, DateOnly? returnDate)
         {
-            var cachedResponse = await _cachingService.GetAsync<List<FlightDto>>(string.Format(cacheSettings.CacheKeyPrefix, origin, destination, departDate));
+            var cachedResponse = await _cachingService.GetListAsync(string.Format(cacheSettings.CacheKeyPrefix, origin, destination, departDate));
             if (cachedResponse != null)
             {
                 return cachedResponse;
@@ -49,7 +49,8 @@ namespace FlightBookingCaseStudy.Infrastructure.Client
             var responseString = await response.Content.ReadAsStringAsync();
 
             var flights = _mapper.Map<List<FlightDto>>(responseString.ParseSoapResponse());
-            await _cachingService.SetAsync(string.Format(cacheSettings.CacheKeyPrefix, origin, destination, departDate), flights, TimeSpan.FromMinutes(cacheSettings.ExpirationInMinutes));
+            await _cachingService.SetAsync(flights, TimeSpan.FromMinutes(cacheSettings.ExpirationInMinutes));
+            await _cachingService.SetListAsync(string.Format(cacheSettings.CacheKeyPrefix, origin, destination, departDate), flights, TimeSpan.FromMinutes(cacheSettings.ExpirationInMinutes));
 
             return flights;
         }

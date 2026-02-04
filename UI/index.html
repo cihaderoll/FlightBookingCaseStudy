@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Uçuş Rezervasyon Sistemi</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background-color: #f1f3f5;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .main-card {
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        border: none;
+      }
+      .btn-search {
+        background-color: #0d6efd;
+        color: white;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .table-hover tbody tr:hover {
+        background-color: #e9ecef;
+        cursor: pointer;
+      }
+      .price-tag {
+        font-weight: bold;
+        color: #198754;
+        font-size: 1.1em;
+      }
+      /* Yükleniyor animasyonu için */
+      #loadingSpinner {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loadingSpinner">
+      <div
+        class="spinner-border text-primary"
+        style="width: 3rem; height: 3rem;"
+        role="status"
+      >
+        <span class="visually-hidden">Yükleniyor...</span>
+      </div>
+    </div>
+
+    <div class="container py-5">
+      <h2 class="text-center mb-4">
+        <i class="fas fa-plane-departure me-2"></i>Uçuş Arama ve Rezervasyon
+      </h2>
+
+      <div class="card main-card mb-4">
+        <div class="card-body p-4">
+          <form id="searchForm">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label class="form-label fw-bold">Nereden</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="origin"
+                  placeholder="Örn: IST"
+                  required
+                />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-bold">Nereye</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="destination"
+                  placeholder="Örn: ADB"
+                  required
+                />
+              </div>
+              <div class="col-md-2">
+                <label class="form-label fw-bold">Gidiş Tarihi</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="departDate"
+                  required
+                />
+              </div>
+              <div class="col-md-2">
+                <label class="form-label fw-bold">Dönüş (Opsiyonel)</label>
+                <input type="date" class="form-control" id="returnDate" />
+              </div>
+              <div class="col-md-2 d-flex align-items-end">
+                <button type="submit" class="btn btn-search btn-lg w-100">
+                  <i class="fas fa-search me-2"></i> Ara
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div id="resultsArea" style="display: none;">
+        <div class="card main-card">
+          <div class="card-header bg-white py-3">
+            <h5 class="mb-0 text-primary">Bulunan Uçuşlar</h5>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th class="ps-4">Uçuş No</th>
+                    <th>Kalkış</th>
+                    <th>Varış</th>
+                    <th>Fiyat</th>
+                    <th class="text-end pe-4">İşlem</th>
+                  </tr>
+                </thead>
+                <tbody id="flightListBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="resultModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title">
+              <i class="fas fa-check-circle me-2"></i>Rezervasyon Başarılı!
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body text-center py-4">
+            <p class="lead">İşleminiz başarıyla tamamlandı.</p>
+            <p>Rezervasyon Numaranız (PNR):</p>
+            <div
+              class="alert alert-light border fs-4 fw-bold text-success"
+              id="bookingGuidDisplay"
+            ></div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Kapat
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="errorModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header bg-danger text-white">
+            <h5 class="modal-title">Hata</h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body" id="errorMessageBody">
+            Bir hata oluştu.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        // --- AYARLAR ---
+        const API_BASE_URL = "https://localhost:7242/api/flights";
+
+        // --- ARAMA İŞLEMİ ---
+        $("#searchForm").on("submit", function (e) {
+          e.preventDefault();
+          showLoading(true);
+
+          const origin = $("#origin").val();
+          const destination = $("#destination").val();
+          const departDate = $("#departDate").val();
+          const returnDate = $("#returnDate").val();
+
+          let queryParams = `?Origin=${origin}&Destination=${destination}&DepartDate=${departDate}`;
+          if (returnDate) {
+            queryParams += `&ReturnDate=${returnDate}`;
+          }
+
+          $.ajax({
+            url: `${API_BASE_URL}${queryParams}`,
+            method: "GET",
+            success: function (response) {
+              renderFlights(response);
+              showLoading(false);
+            },
+            error: handleAjaxError, // Hata yönetimini fonksiyona ayırdık
+          });
+        });
+
+        // --- TABLOYU DOLDURMA ---
+        function renderFlights(flights) {
+          const tbody = $("#flightListBody");
+          tbody.empty();
+
+          if (!flights || flights.length === 0) {
+            tbody.html(
+              '<tr><td colspan="5" class="text-center py-4">Aradığınız kriterlere uygun uçuş bulunamadı.</td></tr>',
+            );
+            $("#resultsArea").fadeIn();
+            return;
+          }
+
+          flights.forEach((flight) => {
+            const depDate = new Date(
+              flight.departureDateTime,
+            ).toLocaleString("tr-TR", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+            const arrDate = new Date(
+              flight.arrivalDateTime,
+            ).toLocaleString("tr-TR", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+            const price = new Intl.NumberFormat("tr-TR", {
+              style: "currency",
+              currency: "TRY",
+            }).format(flight.price);
+
+            // DEĞİŞİKLİK BURADA:
+            // data-flight-id: Backend'e göndermek için (flightId)
+            // data-flight-number: Kullanıcıya mesaj göstermek için (TK1234)
+            const row = `
+                    <tr>
+                        <td class="ps-4 fw-bold text-primary">${flight.flightNumber}</td>
+                        <td>${depDate}</td>
+                        <td>${arrDate}</td>
+                        <td><span class="price-tag">${price}</span></td>
+                        <td class="text-end pe-4">
+                            <button class="btn btn-success btn-sm btn-book" 
+                                    data-flight-id="${flight.flightId}" 
+                                    data-flight-number="${flight.flightNumber}">
+                                <i class="fas fa-ticket-alt me-1"></i> Rezervasyon Yap
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            tbody.append(row);
+          });
+
+          $("#resultsArea").fadeIn();
+        }
+
+        // --- REZERVASYON (BOOK) İŞLEMİ ---
+        $(document).on("click", ".btn-book", function () {
+          // Butondan verileri al
+          const flightId = $(this).data("flight-id"); // Backend için GUID
+          const flightNumber = $(this).data("flight-number"); // Gösterim için String
+
+          // Kullanıcıya FlightNumber gösteriyoruz (GUID göstermek kafa karıştırır)
+          if (
+            !confirm(
+              flightNumber +
+                " numaralı uçuş için rezervasyon yapmak istiyor musunuz?",
+            )
+          )
+            return;
+
+          showLoading(true);
+
+          // Payload artık flightId içeriyor
+          const bookCommand = {
+            flightId: flightId,
+          };
+
+          $.ajax({
+            url: `${API_BASE_URL}`,
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(bookCommand),
+            success: function (response) {
+              showLoading(false);
+              // Response GUID dönüyor (PNR)
+              $("#bookingGuidDisplay").text(response);
+              new bootstrap.Modal(
+                document.getElementById("resultModal"),
+              ).show();
+            },
+            error: handleAjaxError,
+          });
+        });
+
+        // --- ORTAK HATA YÖNETİMİ ---
+        function handleAjaxError(xhr) {
+          showLoading(false);
+
+          let title = "Hata";
+          let detail = "İşlem sırasında beklenmedik bir hata oluştu.";
+
+          if (xhr.responseJSON) {
+            if (xhr.responseJSON.title) title = xhr.responseJSON.title;
+            if (xhr.responseJSON.detail) detail = xhr.responseJSON.detail;
+          } else if (xhr.statusText) {
+            detail = xhr.statusText;
+          }
+
+          // Title BÜYÜK, Detail KÜÇÜK formatı
+          let errorHtml = `
+                <div class="text-center">
+                    <h4 class="fw-bold text-danger mb-2">${title}</h4>
+                    <small class="text-secondary fs-6">${detail}</small>
+                </div>
+            `;
+
+          showError(errorHtml);
+        }
+
+        // --- YARDIMCI FONKSİYONLAR ---
+        function showLoading(show) {
+          if (show) $("#loadingSpinner").css("display", "flex");
+          else $("#loadingSpinner").hide();
+        }
+
+        function showError(htmlContent) {
+          $("#errorMessageBody").html(htmlContent);
+          new bootstrap.Modal(document.getElementById("errorModal")).show();
+        }
+      });
+    </script>
+  </body>
+</html>

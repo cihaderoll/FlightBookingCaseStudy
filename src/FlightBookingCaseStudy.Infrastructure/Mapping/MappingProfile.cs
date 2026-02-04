@@ -8,7 +8,10 @@ namespace FlightBookingCaseStudy.Infrastructure.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<FlightOption, FlightDto>();
+            CreateMap<FlightOption, FlightDto>().AfterMap((src, dest) =>
+            {
+                dest.FlightId = Guid.NewGuid().ToString();
+            });
         }
     }
 }

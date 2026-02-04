@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace FlightBookingCaseStudy.Application.Interfaces
 {
-    public interface ICacheable
+    public interface ILoggerService
     {
-        public string FlightId { get; set; }
     }
 }

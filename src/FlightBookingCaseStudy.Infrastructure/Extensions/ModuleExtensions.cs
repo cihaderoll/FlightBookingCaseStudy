@@ -1,5 +1,6 @@
 ﻿using FlightBookingCaseStudy.Application.Common.Settings;
 using FlightBookingCaseStudy.Application.Interfaces;
+using FlightBookingCaseStudy.Application.Use_Cases.Commands.Search;
 using FlightBookingCaseStudy.Infrastructure.Persistence;
 using FlightBookingCaseStudy.Infrastructure.Services;
 using FlightBookingCaseStudy.Infrastructure.Services.Caching;
@@ -30,7 +31,7 @@ namespace FlightBookingCaseStudy.Infrastructure.Extensions
                 options.InstanceName = "FlightBooking_";
             });
 
-            services.AddSingleton<ICachingService, RedisCacheService>();
+            services.AddSingleton<ICachingService<FlightDto>, RedisCacheService<FlightDto>>();
             services.AddScoped<IAirportService, AirportService>();
 
             services.Configure<CacheSettings>(configuration.GetSection("Caching"));

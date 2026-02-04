@@ -9,6 +9,6 @@ namespace FlightBookingCaseStudy.Application.Use_Cases.Commands.Book
 {
     public class BookFlightCommand : IRequest<Guid>
     {
-        public string FlightNumber { get; set; }
+        public string FlightId { get; set; }
     }
 }

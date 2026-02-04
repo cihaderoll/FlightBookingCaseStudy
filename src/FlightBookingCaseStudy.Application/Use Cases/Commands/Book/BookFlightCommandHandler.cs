@@ -18,28 +18,21 @@ namespace FlightBookingCaseStudy.Application.Use_Cases.Commands.Book
     public class BookFlightCommandHandler : IRequestHandler<BookFlightCommand, Guid>
     {
         private readonly IApplicationDbContext _ctx;
-        private readonly ICachingService _cacheService;
-        private readonly CacheSettings _cacheSettings;
+        private readonly ICachingService<FlightDto> _cacheService;
 
         public BookFlightCommandHandler(
             IApplicationDbContext ctx,
-            ICachingService cacheService,
-            IOptions<CacheSettings> cacheSettings)
+            ICachingService<FlightDto> cacheService)
         {
             _ctx = ctx;
             _cacheService = cacheService;
-            _cacheSettings = cacheSettings.Value;
         }
 
         public async Task<Guid> Handle(BookFlightCommand request, CancellationToken cancellationToken)
         {
-            var flights = await _cacheService.GetAsync<List<FlightDto>>(_cacheSettings.CacheKeyPrefix);
-            if(flights == null || !flights.Any())
-                throw new ValidationException("Flight data not found! Search again please");
-
-            var targetFlight = flights.FirstOrDefault(f => f.FlightNumber == request.FlightNumber);
+            var targetFlight = await _cacheService.GetAsync(request.FlightId);
             if(targetFlight == null)
-                throw new ValidationException("Please check your flight number.");
+                throw new ValidationException("Flight data not found! Search again please");
 
             var order = new Order
             {
