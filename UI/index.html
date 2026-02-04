@@ -201,10 +201,8 @@
 
     <script>
       $(document).ready(function () {
-        // --- AYARLAR ---
         const API_BASE_URL = "https://localhost:7242/api/flights";
 
-        // --- ARAMA İŞLEMİ ---
         $("#searchForm").on("submit", function (e) {
           e.preventDefault();
           showLoading(true);
@@ -226,7 +224,7 @@
               renderFlights(response);
               showLoading(false);
             },
-            error: handleAjaxError, // Hata yönetimini fonksiyona ayırdık
+            error: handleAjaxError,
           });
         });
 
@@ -244,32 +242,31 @@
           }
 
           flights.forEach((flight) => {
-            const depDate = new Date(
-              flight.departureDateTime,
-            ).toLocaleString("tr-TR", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            });
-            const arrDate = new Date(
-              flight.arrivalDateTime,
-            ).toLocaleString("tr-TR", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "numeric",
-              hour: "2-digit",
-              minute: "2-digit",
-            });
+            const depDate = new Date(flight.departureDateTime).toLocaleString(
+              "tr-TR",
+              {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              },
+            );
+            const arrDate = new Date(flight.arrivalDateTime).toLocaleString(
+              "tr-TR",
+              {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              },
+            );
             const price = new Intl.NumberFormat("tr-TR", {
               style: "currency",
               currency: "TRY",
             }).format(flight.price);
 
-            // DEĞİŞİKLİK BURADA:
-            // data-flight-id: Backend'e göndermek için (flightId)
-            // data-flight-number: Kullanıcıya mesaj göstermek için (TK1234)
             const row = `
                     <tr>
                         <td class="ps-4 fw-bold text-primary">${flight.flightNumber}</td>
@@ -291,13 +288,10 @@
           $("#resultsArea").fadeIn();
         }
 
-        // --- REZERVASYON (BOOK) İŞLEMİ ---
         $(document).on("click", ".btn-book", function () {
-          // Butondan verileri al
-          const flightId = $(this).data("flight-id"); // Backend için GUID
-          const flightNumber = $(this).data("flight-number"); // Gösterim için String
+          const flightId = $(this).data("flight-id");
+          const flightNumber = $(this).data("flight-number");
 
-          // Kullanıcıya FlightNumber gösteriyoruz (GUID göstermek kafa karıştırır)
           if (
             !confirm(
               flightNumber +
@@ -308,7 +302,6 @@
 
           showLoading(true);
 
-          // Payload artık flightId içeriyor
           const bookCommand = {
             flightId: flightId,
           };
@@ -320,7 +313,6 @@
             data: JSON.stringify(bookCommand),
             success: function (response) {
               showLoading(false);
-              // Response GUID dönüyor (PNR)
               $("#bookingGuidDisplay").text(response);
               new bootstrap.Modal(
                 document.getElementById("resultModal"),
@@ -330,7 +322,6 @@
           });
         });
 
-        // --- ORTAK HATA YÖNETİMİ ---
         function handleAjaxError(xhr) {
           showLoading(false);
 
@@ -344,7 +335,6 @@
             detail = xhr.statusText;
           }
 
-          // Title BÜYÜK, Detail KÜÇÜK formatı
           let errorHtml = `
                 <div class="text-center">
                     <h4 class="fw-bold text-danger mb-2">${title}</h4>
@@ -355,7 +345,6 @@
           showError(errorHtml);
         }
 
-        // --- YARDIMCI FONKSİYONLAR ---
         function showLoading(show) {
           if (show) $("#loadingSpinner").css("display", "flex");
           else $("#loadingSpinner").hide();
